@@ -69,18 +69,31 @@ describe Board do
   end
 
   context "#grid" do
+
     it "returns the grid" do
       board = Board.new(grid: "blah")
       expect(board.grid).to eq "blah"
     end
 
     it "returns the correct cell" do
-      board = Board.new(grid: [[1,2,3],[4,5,6],[7,8,9]])
-      expect(board.get_cell(0,1)).to eq(1)
+      grid = [[1,"giraff",3],[4,5,6],[7,8,9]]
+      board = Board.new(grid: grid)
+      expect(board.get_cell(0,1)).to eq("giraff")
+      expect(board.get_cell(1,1)).to eq(5)
+    end
+
+  end
+
+  context "#set_cell" do
+    it "updates the value of the cell object at (x,y) coordinate" do
+      Cat = Struct.new(:value) #never seen this before
+      grid = [[Cat.new("cool"), "",""],["","",""],["","",""]]
+      board = Board.new(grid: grid)
+      board.set_cell(0,0, "meow")
+      expect(board.get_cell(0,0).value).to eq "meow"
     end
   end
 
-#right now they want the grid cell method to pass args in as 'x' THEN 'y' ,but then look them up  in reverse order. why, the 'x' is the horozontal, i bleive, y is vertical, which makes sense within the concept of geometry and algebra, but presumably we know that we are using a nested array, right? and we want to pass the args in in the order of the nested array we are trying to access
 
 
 
