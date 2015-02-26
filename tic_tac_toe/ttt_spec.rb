@@ -31,9 +31,9 @@ describe Player do
 
   context "#color" do
     it "returns the color" do
-      input = { color: "X" , name: "Someone" }
+      input = { color: "magenta" , name: "Someone" }
       player = Player.new(input)
-      expect(player.color).to eq "X"
+      expect(player.color).to eq "magenta"
     end
   end #end color context
 
@@ -42,6 +42,16 @@ describe Player do
       input = { color: "X", name: "Spicoli" }
       playa = Player.new(input)
       expect(playa.name).to eq "Spicoli"
+    end
+  end #end name context
+
+end
+
+describe Board do
+
+  context "#initialize" do
+    it "initializes the board with a grid" do
+      expect { Board.new(grid: "grid") }.to_not raise_error
     end
   end
 

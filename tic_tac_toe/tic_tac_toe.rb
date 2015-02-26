@@ -14,7 +14,7 @@ class Player
   end
 end
 
-def Board
+class Board
   def initialize(input)
     @board = input.fetch(:grid)
 
@@ -27,4 +27,3 @@ def Board
   end
 end
 
-#pretty sure fetch obviosuly helps you catch errors if you try and call an arg that isn't present, but i think it has a roll in data sanitation too
