@@ -94,9 +94,199 @@ describe Board do
     end
   end
 
+  TestCell = Struct.new(:value)
+  let(:x_cell) { TestCell.new("X") }
+  let(:y_cell) { TestCell.new("Y") }
+  let(:empty) { TestCell.new }
 
+  context "#game_over" do
+    it "returns :winner if winner? is true" do
+      board = Board.new
+      board.stub(:winner?) {true}
+      expect(board.game_over).to eq :winner
+    end
 
+    it "returns :draw if winner? is false and draw? is true" do
+      board = Board.new
+      board.stub(:winner?) { false }
+      board.stub(:draw?) { true }
+      expect(board.game_over).to eq :draw
+    end
 
+    it "returns false if #winner? is false and #draw? is false" do
+      board = Board.new
+      board.stub(:winner?) { false }
+      board.stub(:draw?) { false }
+      expect(board.game_over).to be_false
+    end
 
+    it "returns :winner when row has objects with values that are all the same" do
+      grid = [
+      [x_cell, x_cell, x_cell],
+      [y_cell, x_cell, y_cell],
+      [y_cell, y_cell, empty]
+      ]
+      board = Board.new(grid: grid)
+      expect(board.game_over).to eq :winner
+    end
+
+    it "returns :winner when colum has objects with values that are all the same" do
+    grid = [
+      [x_cell, x_cell, empty],
+      [y_cell, x_cell, y_cell],
+      [y_cell, x_cell, empty]
+    ]
+    board = Board.new(grid: grid)
+    expect(board.game_over).to eq :winner
+    end
+
+    it "returns :winner when diagonal has objects with values that are all the same" do
+    grid = [
+      [x_cell, empty, empty],
+      [y_cell, x_cell, y_cell],
+      [y_cell, x_cell, x_cell]
+    ]
+    board = Board.new(grid: grid)
+    expect(board.game_over).to eq :winner
+  end
+
+  it "returns :draw when all spaces on the board are taken" do
+    grid = [
+      [x_cell, y_cell, x_cell],
+      [y_cell, x_cell, y_cell],
+      [y_cell, x_cell, y_cell]
+    ]
+    board = Board.new(grid: grid)
+    expect(board.game_over).to eq :draw
+  end
+
+  it "returns false when there is no winner or draw" do
+    grid = [
+      [x_cell, empty, empty],
+      [y_cell, empty, empty],
+      [y_cell, empty, empty]
+    ]
+    board = Board.new(grid: grid)
+    expect(board.game_over).to be_false
+  end
+
+  end
+
+end
+
+describe Array do
+
+  context "#all_empty?" do
+
+    it "returns true if all elements of the Array are empty" do
+      expect(["","",""].all_empty?).to be_true
+    end
+
+    it "returns false if some of the Array elements are not empty" do
+      expect(["",1,"", Object.new, :a].all_empty?).to be_false
+    end
+
+    it "returns true for an empty Array" do
+      expect([].all_empty?).to be_true
+    end
+
+  end
+
+  context "#all_same?" do
+
+    it "returns true if all elements of the Array are the same" do
+      expect(["A", "A", "A"].all_same?).to be_true
+    end
+
+    it "returns false if some of the Array elements are not the same" do
+      expect(["", 1, "", Object.new, :a].all_same?).to be_false
+    end
+
+    it "returns true for an empty Array" do
+      expect([].all_same?).to be_true
+    end
+  end
+
+  context "#any_empty?" do
+    #i would rather test behavior than methods
+  end
+
+end
+
+describe Game do
+
+    let (:bob) { Player.new({color: "X", name: "bob"}) }
+    let (:frank) { Player.new({color: "O", name: "frank"}) }
+
+    context "#initialize" do
+      it "randomly selects a current_player" do
+        Array.any_instance.stub(:shuffle) { [frank, bob] }
+        game = Game.new([bob, frank])
+        expect(game.current_player).to eq frank
+      end
+
+      it "randomly selects an other player" do
+        Array.any_instance.stub(:shuffle) { [frank, bob] }
+        game = Game.new([bob, frank])
+        expect(game.other_player).to eq bob
+      end
+    end
+
+    context "#switch_players" do
+
+      it "will set @current_player to @other_player" do
+        game = Game.new([bob, frank])
+        other_player = game.other_player
+        game.switch_players
+        expect(game.current_player).to eq other_player
+      end
+
+      it "will set @other_player to @current_player" do
+        game = Game.new([bob, frank])
+        current_player = game.current_player
+        game.switch_players
+        expect(game.other_player).to eq current_player
+      end
+    end
+
+    context "#solicit_move" do
+
+      it "asks the player to make a move" do
+        game = Game.new([bob, frank])
+        game.stub(:current_player) { bob }
+        expected = "bob: Enter a number between 1 and 9 to make your move"
+        expect(game.solicit_move).to eq expected
+      end
+
+    end
+
+    context "#get_move" do
+      it "converts human_move of '1' to [0, 0]" do
+        game = Game.new([bob, frank])
+        expect(game.get_move("1")).to eq [0, 0]
+      end
+
+      it "converts human_move of '1' to [0, 0]" do
+        game = Game.new([bob, frank])
+        expect(game.get_move("7")).to eq [0, 2]
+      end
+    end
+
+    context "#game_over_message" do
+
+      it "returns '{current player name} won!' if board shows a winner" do
+        game = Game.new([bob, frank])
+        game.stub(:current_player) { bob }
+        game.board.stub(:game_over) { :winner }
+        expect(game.game_over_message).to eq "bob won!"
+      end
+
+      it "returns 'The game ended in a tie' if board shows a draw" do
+        game = Game.new([bob, frank])
+        game.stub(:current_player) { bob }
+        game.board.stub(:game_over) { :draw }
+        expect(game.game_over_message).to eq "The game ended in a tie"
+      end
+    end
 
 end
