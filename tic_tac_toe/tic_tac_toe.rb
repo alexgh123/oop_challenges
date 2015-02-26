@@ -78,6 +78,7 @@ class Board
   end
 
   def winning_position_values(winning_position)
+    p "#{winning_position}"
     winning_position.map { |cell| cell.value }
   end
 
@@ -119,14 +120,14 @@ class Game
   def play
     puts "#{current_player.name} has randomly been selected as the first player"
     while true
-      board.formatted_grid
+      board
       puts ""
       puts solicit_move
       x, y = get_move
       board.set_cell(x, y, current_player.color)
       if board.game_over
         puts game_over_message
-        board.formatted_grid
+        board
         return
       else
         switch_players
