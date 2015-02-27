@@ -51,10 +51,28 @@ class Board
   end
 
   def game_over
-    return :winner if winner?
-    return :draw if draw?
-    false
+    if board.include("X")
+      p "x on the board, over!"
+      return true
+    elsif board.include("O")
+      p "o on theboard, over!"
+      return true
+    else
+      false
+    end
   end
+
+    # if winner?
+    #   p "winner? returned true"
+    #   return :winner
+    # elsif draw?
+    #   p "draw returned true"
+    #   return :draw
+    # else
+    #   p "neither returned true"
+    #   false
+    # end
+  # end
 
 
   def formatted_grid
@@ -80,30 +98,23 @@ class Board
   end
 
   def winner?
-    #winning positions is a nested array with all of the possible combinations of winning line ups, if any one of the nested arrays has all 'x's or 'o's then the game is over and its a win for the player that owns that color
-    p "(84) winner? method"
+
     winning_positions.each do |winning_position|
-      p "(86) winner? method non culprit looks like: #{winning_position_values(winning_position)}"
       next if winning_position_values(winning_position).not_all_same?
-      #this shouldn't be an 'all empty check, we want to just confirm that no one has won and move on to the next one'
-      p "(89) winner? method: pretty sure we're here in the winner"
-      p "(90)culprit?: #{winning_position_values(winning_position)}"
       return true if winning_position_values(winning_position.all_same?)
     end
     false
   end
 
   def winning_position_values(winning_position)
-    p " (97) method: winning position values being called, they are:"
+    p "winning position:"
     p "#{winning_position}"
-    p "#{winning_position.class}"
-    #so we are iterating over each element in the array, and that works, but we are running into a issue when we get to the end of the array
     winning_position.map { |cell| cell.value }
   end
 
   def draw?
     grid.flatten.map { |cell| cell.value }.none_empty?
-  end #uses an array method i made, might need to include it or something
+  end
 
   def default_grid
     Array.new(3) { Array.new(3) { Cell.new } }
@@ -134,7 +145,7 @@ class Game
   end
 
   def game_over_message
-    p "method: game over message (137)"
+
     return "#{current_player.name} won!" if board.game_over == :winner
     return "The game ended in a tie" if board.game_over == :draw
   end
@@ -142,22 +153,36 @@ class Game
   def play
     puts "#{current_player.name} has randomly been selected as the first player"
     while true
-      p "play method (145)"
+
       board.formatted_grid
       puts ""
       puts solicit_move
       x, y = get_move
-      p "#{x} and #{y} "
-      board.set_cell(x, y, current_player.color)
-      p "play method (152)"
-      if board.game_over
 
-        puts game_over_message
-        board.formatted_grid
-        return
+      board.set_cell(x, y, current_player.color)
+      p""
+      p "board object: #{board}"
+      p ""
+      p "printing board.grid[0][1]"
+      p board.grid[0][1]
+
+      if board.grid.include?("A") #game is over or tied
+        p "I don't want to see you"
       else
         switch_players
       end
+
+      # if board.game_over
+      #   p "game over path"
+
+      #   puts game_over_message
+      #   board.formatted_grid
+      #   return
+      # else
+      #   p "swithced players path"
+      #   switch_players
+      # end
+
     end
   end
 
@@ -180,3 +205,6 @@ class Game
 
 end
 
+test = Board.new
+# p test
+# p test.game_over
