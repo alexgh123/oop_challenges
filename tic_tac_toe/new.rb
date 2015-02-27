@@ -15,14 +15,9 @@ def display_board
   p @board[6..8]
 end
 
-def clean_input(input)
-  p "please use the digits 1-9" unless @board_key.include?(input)
-  input
-
-  if the input is included in board_key, then return input, otherwise raise error
-end
 
 def user_input_converter(input)
+  raise ArgumentError, "please use the digits 1-9" unless @board_key.include?(input)
   input -1
 end
 
@@ -61,7 +56,6 @@ def nested_array_of_winning_lines
 end
 
 def tic_tac_toe_condition_arrays
-#for each nested_array_of_winning_lines, if it is not empty, and the length is
   nested_array_of_winning_lines.each do |line|
       if line.include?("X")
         if line.uniq.length == 1
@@ -77,7 +71,6 @@ def tic_tac_toe_condition_arrays
 end #ends method
 
 def winner_check
-  #if board has any of the pre approved winning combinations, then there is a win
   if tic_tac_toe_condition_arrays
     p "#{@player} wins!"
     true
@@ -94,6 +87,7 @@ def taking_turns
     name_and_symbol_assignment(count)
     p "#{@player} what is your move ?"
     player_input = user_input_converter(gets.chomp.to_i)
+    p "player input is #{player_input}"
     @board[player_input] = @symbol
     display_board
     winner_check
@@ -110,12 +104,5 @@ def play
   taking_turns
 end
 
-# display_board
-
-# p nested_array_of_winning_lines
-
-
-
-# tic_tac_toe_condition_arrays
 
 play
