@@ -51,6 +51,24 @@ class Board
   end
 
   def game_over
+    if board.grid.each do |small_array|
+      small_array.each do |cell|
+        if cell.value.empty?
+          false
+        else
+          true
+        end
+      end
+    end
+      p "idk"
+
+
+    end
+  end
+
+
+
+
     if board.include("X")
       p "x on the board, over!"
       return true
@@ -60,6 +78,8 @@ class Board
     else
       false
     end
+
+
   end
 
     # if winner?
@@ -160,13 +180,19 @@ class Game
       x, y = get_move
 
       board.set_cell(x, y, current_player.color)
-      p""
-      p "board object: #{board}"
-      p ""
-      p "printing board.grid[0][1]"
-      p board.grid[0][1]
+      # p""
+      # p "board object: #{board}"
+      # p ""
+      # p "printing board.grid[0][1]"
+      # p board.grid[0][1]
 
-      if board.grid.include?("A") #game is over or tied
+      #game_over conditions
+        # 3 in a row
+        # board is full
+          #if at each board.grid value, it contains an x or a y, game is over
+
+
+      if game_over
         p "I don't want to see you"
       else
         switch_players
